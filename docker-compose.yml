@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  # APIサーバ
+  api:
+    build:
+      context: ./api
+      args:
+        UID: 1000
+        GID: 1000
+    tty: true
+    volumes:
+      - type: bind
+        source: "./api"
+        target: "/home/user/workspace"
+    ports:
+      - "8080:8080"
+
+  # リバースプロキシ兼静的ファイルホストサーバ
+  reverse:
+    image: nginx:1.22.1
+    ports:
+      - "80:80"
+
+  # セッション管理用のKVS
+  kvs:
+    image: redis:7.0.5
+
+  # DB
+  db:
+    image: postgres:15.1
+    environment:
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
