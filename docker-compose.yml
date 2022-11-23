@@ -15,20 +15,34 @@ services:
         target: "/home/user/workspace"
     ports:
       - "8080:8080"
-
-  # リバースプロキシ兼静的ファイルホストサーバ
-  reverse:
-    image: nginx:1.22.1
-    ports:
-      - "80:80"
+    depends_on:
+      kvs:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+    environment:
+      - SESSION_SECRET
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
 
   # セッション管理用のKVS
   kvs:
     image: redis:7.0.5
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 30s
+      retries: 30
 
   # DB
   db:
     image: postgres:15.1
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 1s
+      timeout: 30s
+      retries: 30
     environment:
       - POSTGRES_DB
       - POSTGRES_USER

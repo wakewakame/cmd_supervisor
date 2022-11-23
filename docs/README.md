@@ -2,9 +2,8 @@
 
 ```mermaid
 flowchart TD
-  u[User] --> reverse[Reverse Proxy]
+  u[User] --> api[API Server]
   subgraph Docker
-    reverse --> api[API Server]
     api --> db[(DB)]
     api --> kvs[(KVS)]
   end

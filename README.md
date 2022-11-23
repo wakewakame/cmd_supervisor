@@ -13,6 +13,7 @@ cp .env_template .env
 ```
 
 上記コマンド実行後、 `.env` を適宜書き換える。
+`SESSION_SECRET` には `openssl rand 64 | openssl enc -A -base64` の結果などを用いる。
 
 ## 1. 起動
 
